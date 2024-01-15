@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - stage
+      - develop
 
 jobs:
   release:
