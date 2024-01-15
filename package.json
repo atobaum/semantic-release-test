@@ -8,12 +8,12 @@
   },
   "devDependencies": {
     "@saithodev/semantic-release-backmerge": "^4.0.1",
-    "@semantic-release/changelog": "^6.0.2",
+    "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/exec": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "conventional-changelog-conventionalcommits": "^7.0.2",
-    "semantic-release": "^19.0.5",
-    "semantic-release-slack-bot": "^3.5.3"
+    "semantic-release": "^23.0.0",
+    "semantic-release-slack-bot": "^4.0.2"
   },
   "author": "atobaum <atobaum@gmail.com>",
   "license": "ISC",
