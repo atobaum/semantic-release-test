@@ -33,7 +33,7 @@ jobs:
           echo $GOV
           # gov env out
           if [[ $GOV -eq 1 ]]; then
-            echo "GOV=$GOV" >> "$GITHUB_ENV"
+            echo "GOV=true" >> "$GITHUB_ENV"
           fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
