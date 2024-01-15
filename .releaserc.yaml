@@ -9,6 +9,7 @@ tagFormat: "v${version}${ process.env.GOV === 'true' ? '+gov' : '' }"
 plugins:
   - "@semantic-release/commit-analyzer"
   - "@semantic-release/release-notes-generator"
+  - "@saithodev/semantic-release-backmerge"
   - "@semantic-release/github"
 
 verifyConditions:
