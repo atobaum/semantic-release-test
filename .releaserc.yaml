@@ -14,6 +14,12 @@ plugins:
 verifyConditions:
   - "@semantic-release/changelog"
   - "@semantic-release/git"
+  - "semantic-release-slack-bot"
+  - path: "@saithodev/semantic-release-backmerge"
+    branches:
+      - from: main
+        to: stage
+    backmergeStrategy: merge
 
 prepare:
   - "@semantic-release/changelog"
@@ -22,3 +28,9 @@ prepare:
 publish:
   - "@semantic-release/github"
 
+success:
+  - path: "@saithodev/semantic-release-backmerge"
+    branches:
+      - from: main
+        to: stage
+    backmergeStrategy: merge
