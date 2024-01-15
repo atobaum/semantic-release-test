@@ -29,7 +29,7 @@ jobs:
       - name: Resolve ENV
         run: |
           env
-          GOV=$(gh api /repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/pulls --jq '.[0].labels | [.[] | select(.name == "gov-deploy")] | length')
+          GOV=$(gh api /repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/pulls --jq 'map(.labels) | flatten | [.[] | select(.name == "gov-deploy")] | length')
           echo $GOV
           # gov env out
           echo "GOV=$GOV" >> "$GITHUB_OUTPUT"
