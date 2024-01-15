@@ -1,0 +1,24 @@
+branches:
+  - main
+  - name: stage
+    channel: rc
+
+preset: "conventionalcommits"
+tagFormat: "v${version}${ process.env.GOV === 'true' ? '+gov' : '' }"
+
+plugins:
+  - "@semantic-release/commit-analyzer"
+  - "@semantic-release/release-notes-generator"
+  - "@semantic-release/github"
+
+verifyConditions:
+  - "@semantic-release/changelog"
+  - "@semantic-release/git"
+
+prepare:
+  - "@semantic-release/changelog"
+  - "@semantic-release/npm"
+
+publish:
+  - "@semantic-release/github"
+
