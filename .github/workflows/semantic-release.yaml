@@ -27,3 +27,4 @@ jobs:
         run: yarn semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GOV: ${{ (startsWith(github.ref, 'refs/heads/develop') && 'true') || 'false' }}
