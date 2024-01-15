@@ -28,10 +28,11 @@ jobs:
 
       - name: Resolve ENV
         run: |
-          env
-          echo 123
-        #   gh api /repos/modusign/approval/commits/3c01df5/pulls --jq '.[0].labels | .[] | select(.default == false)'
-        #   gh api /repos/modusign/approval/commits/3c01df5/pulls --jq '.[0].labels | .[] | select(.default == false)'
+          GOV=$(gh api /repos/$(GITHUB_REPOSITORY)/commits/$(GITHUB_SHA)/pulls --jq '.[0].labels | [.[] | select(.name == "gov-deploy")] | length')
+          echo $GOV
+          # env
+          # gov env out
+          echo "GOV=$GOV" >> "$GITHUB_OUTPUT"
 
       - name: Semantic Release
         run: yarn semantic-release
