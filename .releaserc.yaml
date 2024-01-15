@@ -1,6 +1,6 @@
 branches:
   - main
-  - name: develop
+  - name: stage
     prerelease: rc
     channel: next
 
@@ -10,17 +10,15 @@ tagFormat: "v${version}${ process.env.GOV === 'true' ? '+gov' : '' }"
 plugins:
   - "@semantic-release/commit-analyzer"
   - "@semantic-release/release-notes-generator"
-  - "@saithodev/semantic-release-backmerge"
   - "@semantic-release/github"
+  - - "@saithodev/semantic-release-backmerge"
+    - backmergeBranches:
+      - stage
+    - backmergeStrategy: merge
 
 verifyConditions:
   - "@semantic-release/changelog"
   - "@semantic-release/git"
-  - path: "@saithodev/semantic-release-backmerge"
-    branches:
-      - from: main
-        to: stage
-    backmergeStrategy: merge
 
 prepare:
   - "@semantic-release/changelog"
@@ -29,8 +27,3 @@ publish:
   - "@semantic-release/github"
 
 success:
-  - path: "@saithodev/semantic-release-backmerge"
-    branches:
-      - from: main
-        to: stage
-    backmergeStrategy: merge
