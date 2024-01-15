@@ -11,6 +11,9 @@ jobs:
   release:
     runs-on: ubuntu-latest
 
+    # outputs:
+    #   GOV: ${{ steps.resolve-env.outputs.GOV }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -22,6 +25,13 @@ jobs:
 
       - name: Install dependencies
         run: yarn install
+
+      - name: Resolve ENV
+        run: |
+          env
+          echo 123
+        #   gh api /repos/modusign/approval/commits/3c01df5/pulls --jq '.[0].labels | .[] | select(.default == false)'
+        #   gh api /repos/modusign/approval/commits/3c01df5/pulls --jq '.[0].labels | .[] | select(.default == false)'
 
       - name: Semantic Release
         run: yarn semantic-release
