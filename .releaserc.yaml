@@ -22,7 +22,6 @@ verifyConditions:
 
 prepare:
   - "@semantic-release/changelog"
-  - "@semantic-release/npm"
 
 publish:
   - "@semantic-release/github"
