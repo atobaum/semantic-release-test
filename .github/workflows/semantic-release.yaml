@@ -28,11 +28,13 @@ jobs:
 
       - name: Resolve ENV
         run: |
-          GOV=$(gh api /repos/$(GITHUB_REPOSITORY)/commits/$(GITHUB_SHA)/pulls --jq '.[0].labels | [.[] | select(.name == "gov-deploy")] | length')
+          env
+          GOV=$(gh api /repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/pulls --jq '.[0].labels | [.[] | select(.name == "gov-deploy")] | length')
           echo $GOV
-          # env
           # gov env out
           echo "GOV=$GOV" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Semantic Release
         run: yarn semantic-release
