@@ -72,6 +72,7 @@ jobs:
           echo "Body: $BODY"
 
           git remote add target https://atobaum:${{ secrets.TARGET_REPO_GITHUB_TOKEN }}@github.com/atobaum/semantic-release-test2.git
+          git remote get-url target
           git push target ${GITHUB_REF_NAME}:${BRANCH}
 
           echo -e "$BODY" | gh release edit ${GITHUB_REF_NAME} -F -
