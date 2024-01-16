@@ -19,6 +19,8 @@ plugins:
   - - "@semantic-release/exec"
     - prepareCmd: |
         env
+      successCmd: |
+        env
 
 verifyConditions:
   - "@semantic-release/changelog"
