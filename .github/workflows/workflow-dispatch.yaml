@@ -35,6 +35,11 @@ jobs:
           REF: ${{ github.ref }}
           TAGS: ${{ inputs.tags }}
           # ENVIRONMENT: ${{ inputs.environment }}.
+      - run: |
+          if [[ ! $GITHUB_REF_TYPE != "tag" ]]; then
+            echo "Ref is not a tag"
+            exit 1
+          fi
 
       - uses: actions/checkout@v4
         with:
@@ -49,3 +54,4 @@ jobs:
           env
           git status
           git log --oneline --decorate --graph --all
+          gh view release ${{ github.ref }}
