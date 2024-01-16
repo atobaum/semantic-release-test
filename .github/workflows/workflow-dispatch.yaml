@@ -68,7 +68,7 @@ jobs:
           echo "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
 
           # append markdown link to body env
-          BODY="${BODY}\n\n- gov deployed [action link](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}) - $(date)"
+          BODY="${BODY}\n\n### modusign-gov tenant deployment log\n- gov deployed [action link](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}) - $(date)"
           echo "Body: $BODY"
 
           echo -e "$BODY" | gh release edit ${GITHUB_REF_NAME} -F -
