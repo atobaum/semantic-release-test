@@ -71,6 +71,7 @@ jobs:
           BODY="${BODY}\n\n### modusign-gov tenant deployment log\n- gov deployed [action link](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}) - $(date)"
           echo "Body: $BODY"
 
+          git config credential.helper store
           git remote add target https://atobaum:${{ secrets.TARGET_REPO_GITHUB_TOKEN }}@github.com/atobaum/semantic-release-test2.git
           git remote get-url target
           git push target ${GITHUB_REF_NAME}:${BRANCH}
