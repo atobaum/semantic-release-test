@@ -54,7 +54,7 @@ jobs:
           env
           git status
           git log --oneline --decorate --graph --all
-          RES=$(gh release view ${{ github.ref }} --json 'apiUrl,body,createdAt,isPrerelease,isDraft,name,tagName,targetCommitish,url')
+          RES=$(gh release view ${GITHUB_REF_NAME} --json 'apiUrl,body,createdAt,isPrerelease,isDraft,name,tagName,targetCommitish,url')
 
           BRANCH=$(printf '%s' "$RES" | jq -r '.targetCommitish')
           BODY=$(printf '%s' "$RES" | jq -r '.body')
