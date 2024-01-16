@@ -36,7 +36,7 @@ jobs:
           TAGS: ${{ inputs.tags }}
           # ENVIRONMENT: ${{ inputs.environment }}.
       - run: |
-          if [[ ! $GITHUB_REF_TYPE != "tag" ]]; then
+          if [[ $GITHUB_REF_TYPE != "tag" ]]; then
             echo "Ref is not a tag"
             exit 1
           fi
@@ -54,4 +54,17 @@ jobs:
           env
           git status
           git log --oneline --decorate --graph --all
-          gh view release ${{ github.ref }}
+          RES=$(gh release view ${{ github.ref }} --json 'apiUrl,body,createdAt,isPrerelease,isDraft,name,tagName,targetCommitish,url')
+
+          BRANCH=$(printf '%s' "$RES" | jq -r '.targetCommitish')
+          BODY=$(printf '%s' "$RES" | jq -r '.body')
+          IS_PRERELEASE=$(printf '%s' "$RES" | jq -r '.isPrerelease')
+          IS_DRAFT=$(printf '%s' "$RES" | jq -r '.isDraft')
+
+          echo "Branch: $BRANCH"
+          echo "Body: $BODY"
+          echo "Is prerelease: $IS_PRERELEASE"
+          echo "Is draft: $IS_DRAFT"
+          echo "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
