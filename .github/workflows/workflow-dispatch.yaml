@@ -66,5 +66,9 @@ jobs:
           echo "Is prerelease: $IS_PRERELEASE"
           echo "Is draft: $IS_DRAFT"
           echo "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+
+          # append markdown link to body env
+          BODY="${BODY}\n\n[Run details](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})"
+          echo "Body: $BODY"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
