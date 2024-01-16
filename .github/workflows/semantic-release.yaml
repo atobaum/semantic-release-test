@@ -26,7 +26,8 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Resolve ENV
+      - id: resolve-env
+        name: Resolve ENV
         run: |
           env
           GOV=$(gh api /repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/pulls --jq 'map(.labels) | flatten | [.[] | select(.name == "gov-deploy")] | length')
