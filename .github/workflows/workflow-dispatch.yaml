@@ -46,6 +46,7 @@ jobs:
           # Number of commits to fetch. 0 indicates all history for all branches and tags.
           # Default: 1
           fetch-depth: 0
+          persist-credentials: false
 
           # Whether to fetch tags, even if fetch-depth > 0.
           # Default: false
@@ -73,11 +74,11 @@ jobs:
 
           git config credential.helper store
           git remote add target https://atobaum:${{ secrets.TARGET_REPO_GITHUB_TOKEN }}@github.com/atobaum/semantic-release-test2.git
-          git remote get-url target
-          git remote get-url target | cut -c1-35 
-          git config --list
-          git config --unset "http.https://github.com/.extraheader"
-          git config --list
+          # git remote get-url target
+          # git remote get-url target | cut -c1-35 
+          # git config --list
+          # git config --unset "http.https://github.com/.extraheader"
+          # git config --list
           git push target ${GITHUB_REF_NAME}:${BRANCH}
 
           echo -e "$BODY" | gh release edit ${GITHUB_REF_NAME} -F -
