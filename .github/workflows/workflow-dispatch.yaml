@@ -71,6 +71,6 @@ jobs:
           BODY="${BODY}\n\n- gov deployed [action link](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}) - $(date)"
           echo "Body: $BODY"
 
-          echo $BODY | gh release edit ${GITHUB_REF_NAME} -F -
+          echo -e "$BODY" | gh release edit ${GITHUB_REF_NAME} -F -
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
