@@ -33,6 +33,7 @@ jobs:
           echo $GOV
           # gov env out
           if [[ $GOV -eq 1 ]]; then
+            echo "in if statement"
             echo "GOV=true" >> "$GITHUB_ENV"
           fi
         env:

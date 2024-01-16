@@ -16,6 +16,9 @@ plugins:
       - from: main
         to: stage
       backmergeStrategy: merge
+  - - "@semantic-release/exec"
+    - prepareCmd: |
+        env
 
 verifyConditions:
   - "@semantic-release/changelog"
