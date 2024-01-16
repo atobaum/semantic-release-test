@@ -1,0 +1,76 @@
+name: Workflow Dispatch
+
+on:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: "Log level"
+        required: true
+        default: "warning"
+        type: choice
+        options:
+          - info
+          - warning
+          - debug
+      tags:
+        description: "Test scenario tags"
+        required: false
+        type: boolean
+      # environment:
+      #   description: "Environment to run tests against"
+      #   type: environment
+      #   required: true
+jobs:
+  log-the-inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Log level: $LEVEL"
+          echo "Tags: $TAGS"
+          echo "Environment: $ENVIRONMENT"
+          echo "Ref: $REF"
+          env
+        env:
+          LEVEL: ${{ inputs.logLevel }}
+          REF: ${{ github.ref }}
+          TAGS: ${{ inputs.tags }}
+          # ENVIRONMENT: ${{ inputs.environment }}.
+      - run: |
+          if [[ $GITHUB_REF_TYPE != "tag" ]]; then
+            echo "Ref is not a tag"
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          # Number of commits to fetch. 0 indicates all history for all branches and tags.
+          # Default: 1
+          fetch-depth: 0
+
+          # Whether to fetch tags, even if fetch-depth > 0.
+          # Default: false
+          # fetch-tags: ""
+      - run: |
+          env
+          git status
+          git log --oneline --decorate --graph --all
+          RES=$(gh release view ${GITHUB_REF_NAME} --json 'apiUrl,body,createdAt,isPrerelease,isDraft,name,tagName,targetCommitish,url')
+
+          BRANCH=$(printf '%s' "$RES" | jq -r '.targetCommitish')
+          BODY=$(printf '%s' "$RES" | jq -r '.body')
+          IS_PRERELEASE=$(printf '%s' "$RES" | jq -r '.isPrerelease')
+          IS_DRAFT=$(printf '%s' "$RES" | jq -r '.isDraft')
+
+          echo "Branch: $BRANCH"
+          echo "Body: $BODY"
+          echo "Is prerelease: $IS_PRERELEASE"
+          echo "Is draft: $IS_DRAFT"
+          echo "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+
+          # append markdown link to body env
+          BODY="${BODY}\n\n### modusign-gov tenant deployment log\n- gov deployed [action link](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}) - $(date)"
+          echo "Body: $BODY"
+
+          echo -e "$BODY" | gh release edit ${GITHUB_REF_NAME} -F -
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

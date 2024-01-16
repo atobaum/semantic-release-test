@@ -11,6 +11,9 @@ jobs:
   release:
     runs-on: ubuntu-latest
 
+    outputs:
+      GOV: ${{ steps.resolve-env.outputs.GOV }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -23,7 +26,22 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - id: resolve-env
+        name: Resolve ENV
+        run: |
+          env
+          GOV=$(gh api /repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/pulls --jq 'map(.labels) | flatten | [.[] | select(.name == "gov-deploy")] | length')
+          echo $GOV
+          # gov env out
+          if [[ $GOV -eq 1 ]]; then
+            echo "in if statement"
+            echo "gov=true" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Semantic Release
         run: yarn semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GOV: ${{ steps.resolve-env.outputs.gov }}
