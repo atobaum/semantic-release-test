@@ -1,4 +1,4 @@
-name: Semantic Release
+name: Workflow Dispatch
 
 on:
   workflow_dispatch:
@@ -16,10 +16,10 @@ on:
         description: "Test scenario tags"
         required: false
         type: boolean
-      environment:
-        description: "Environment to run tests against"
-        type: environment
-        required: true
+      # environment:
+      #   description: "Environment to run tests against"
+      #   type: environment
+      #   required: true
 jobs:
   log-the-inputs:
     runs-on: ubuntu-latest
@@ -29,8 +29,23 @@ jobs:
           echo "Tags: $TAGS"
           echo "Environment: $ENVIRONMENT"
           echo "Ref: $REF"
+          env
         env:
           LEVEL: ${{ inputs.logLevel }}
           REF: ${{ github.ref }}
           TAGS: ${{ inputs.tags }}
-          ENVIRONMENT: ${{ inputs.environment }}.
+          # ENVIRONMENT: ${{ inputs.environment }}.
+
+      - uses: actions/checkout@v4
+        with:
+          # Number of commits to fetch. 0 indicates all history for all branches and tags.
+          # Default: 1
+          fetch-depth: 0
+
+          # Whether to fetch tags, even if fetch-depth > 0.
+          # Default: false
+          # fetch-tags: ""
+      - run: |
+          env
+          git status
+          git log --oneline --decorate --graph --all
