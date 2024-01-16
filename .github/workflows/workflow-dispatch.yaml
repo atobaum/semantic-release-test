@@ -1,3 +1,5 @@
+name: Semantic Release
+
 on:
   workflow_dispatch:
     inputs:
@@ -26,7 +28,9 @@ jobs:
           echo "Log level: $LEVEL"
           echo "Tags: $TAGS"
           echo "Environment: $ENVIRONMENT"
+          echo "Ref: $REF"
         env:
           LEVEL: ${{ inputs.logLevel }}
+          REF: ${{ github.ref }}
           TAGS: ${{ inputs.tags }}
           ENVIRONMENT: ${{ inputs.environment }}.
