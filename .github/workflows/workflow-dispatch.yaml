@@ -24,7 +24,8 @@ jobs:
   log-the-inputs:
     runs-on: ubuntu-latest
     steps:
-      - run: |
+      - name: Check whether the ref is a tag
+        run: |
           echo "Log level: $LEVEL"
           echo "Tags: $TAGS"
           echo "Environment: $ENVIRONMENT"
@@ -35,7 +36,9 @@ jobs:
           REF: ${{ github.ref }}
           TAGS: ${{ inputs.tags }}
           # ENVIRONMENT: ${{ inputs.environment }}.
-      - run: |
+
+      - name: Check whether the ref is a tag
+        run: |
           if [[ $GITHUB_REF_TYPE != "tag" ]]; then
             echo "Ref is not a tag"
             exit 1
@@ -46,21 +49,19 @@ jobs:
           # Number of commits to fetch. 0 indicates all history for all branches and tags.
           # Default: 1
           fetch-depth: 0
+
           persist-credentials: false
 
-          # Whether to fetch tags, even if fetch-depth > 0.
-          # Default: false
-          # fetch-tags: ""
       - run: |
           env
-          git status
-          git log --oneline --decorate --graph --all
-          RES=$(gh release view ${GITHUB_REF_NAME} --json 'apiUrl,body,createdAt,isPrerelease,isDraft,name,tagName,targetCommitish,url')
+          # git status
+          # git log --oneline --decorate --graph --all
+          RELEASE_DATA=$(gh release view ${GITHUB_REF_NAME} --json 'apiUrl,body,createdAt,isPrerelease,isDraft,name,tagName,targetCommitish,url')
 
-          BRANCH=$(printf '%s' "$RES" | jq -r '.targetCommitish')
-          BODY=$(printf '%s' "$RES" | jq -r '.body')
-          IS_PRERELEASE=$(printf '%s' "$RES" | jq -r '.isPrerelease')
-          IS_DRAFT=$(printf '%s' "$RES" | jq -r '.isDraft')
+          BRANCH=$(printf '%s' "$RELEASE_DATA" | jq -r '.targetCommitish')
+          BODY=$(printf '%s' "$RELEASE_DATA" | jq -r '.body')
+          IS_PRERELEASE=$(printf '%s' "$RELEASE_DATA" | jq -r '.isPrerelease')
+          IS_DRAFT=$(printf '%s' "$RELEASE_DATA" | jq -r '.isDraft')
 
           echo "Branch: $BRANCH"
           echo "Body: $BODY"
@@ -68,19 +69,24 @@ jobs:
           echo "Is draft: $IS_DRAFT"
           echo "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
 
-          # append markdown link to body env
-          BODY="${BODY}\n\n### modusign-gov tenant deployment log\n- gov deployed [action link](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}) - $(date)"
-          echo "Body: $BODY"
+          git remote add target https://${TARGET_REPO_USERNAME}:${{ secrets.TARGET_REPO_GITHUB_TOKEN }}@${TARGET_REPO}
 
-          git config credential.helper store
-          git remote add target https://atobaum:${{ secrets.TARGET_REPO_GITHUB_TOKEN }}@github.com/atobaum/semantic-release-test2.git
-          # git remote get-url target
-          # git remote get-url target | cut -c1-35 
-          # git config --list
-          # git config --unset "http.https://github.com/.extraheader"
-          # git config --list
+          # check if the tag is already pushed
+          ALREADY_PUSHED=$(git branch -r --contains ${GITHUB_REF_NAME} | grep "\btarget/${BRANCH}\b" | wc -l | tr -d ' ')  
+
+          if [[ $ALREADY_PUSHED -gt 0 ]]; then
+            echo "Branch already pushed"
+            exit 0
+          fi
+
+          # push the tag
           git push target ${GITHUB_REF_NAME}:${BRANCH}
+          git push target ${GITHUB_REF_NAME}
 
+          # append markdown link to body env
+          BODY="${BODY}\n\n### modusign-gov tenant deployment log\n- [gov-deployed] [![Workflow Dispatch](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/workflows/workflow-dispatch.yaml/badge.svg?branch=${GITHUB_REF_NAME})](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})"
           echo -e "$BODY" | gh release edit ${GITHUB_REF_NAME} -F -
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGET_REPO_USERNAME: atobaum
+          TARGET_REPO: github.com/atobaum/semantic-release-test2.git
