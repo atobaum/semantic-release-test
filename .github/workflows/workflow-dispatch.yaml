@@ -52,7 +52,8 @@ jobs:
 
           persist-credentials: false
 
-      - run: |
+      - name: push tag to target repo
+        run: |
           env
           # git status
           # git log --oneline --decorate --graph --all
