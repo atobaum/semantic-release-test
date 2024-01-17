@@ -71,9 +71,10 @@ jobs:
           echo "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
 
           git remote add target https://${TARGET_REPO_USERNAME}:${{ secrets.TARGET_REPO_GITHUB_TOKEN }}@${TARGET_REPO}
+          git fetch target
 
           # check if the tag is already pushed
-          ALREADY_PUSHED=$(git branch -r --contains ${GITHUB_REF_NAME} | grep "\btarget/${BRANCH}\b" | wc -l | tr -d ' ')  
+          ALREADY_PUSHED=$(git branch -r --contains HEAD | grep "\btarget/${BRANCH}\b" | wc -l | tr -d ' ')  
 
           echo "ALREADY_PUSHED: $ALREADY_PUSHED"
           if [[ $ALREADY_PUSHED -gt 0 ]]; then
