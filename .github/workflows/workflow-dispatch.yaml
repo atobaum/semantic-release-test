@@ -94,7 +94,7 @@ jobs:
           TARGET_REPO_USERNAME: atobaum
           TARGET_REPO: github.com/atobaum/semantic-release-test2.git
 
-  notify-failure:
+  notify-result:
     needs: [sync-source-commit]
     runs-on: ubuntu-latest
     env:
