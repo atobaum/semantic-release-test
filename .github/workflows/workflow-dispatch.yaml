@@ -1,4 +1,4 @@
-name: Workflow Dispatch
+name: Sync Git Repository
 
 on:
   workflow_dispatch:
@@ -21,7 +21,7 @@ on:
     #   type: environment
     #   required: true
 jobs:
-  sync-source-commit:
+  sync-git-repository:
     runs-on: ubuntu-latest
     steps:
       - name: Check whether the ref is a tag
