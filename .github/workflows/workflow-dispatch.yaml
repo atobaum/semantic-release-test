@@ -21,7 +21,7 @@ on:
     #   type: environment
     #   required: true
 jobs:
-  log-the-inputs:
+  sync-source-commit:
     runs-on: ubuntu-latest
     steps:
       - name: Check whether the ref is a tag
@@ -93,3 +93,16 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TARGET_REPO_USERNAME: atobaum
           TARGET_REPO: github.com/atobaum/semantic-release-test2.git
+
+  notify-failure:
+    needs: [sync-source-commit]
+    runs-on: ubuntu-latest
+    env:
+      SLACK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    steps:
+      - name: Notify status success
+        uses: lazy-actions/slatify@master
+        with:
+          type: ${{ job.status }}
+          job_name: "${GITHUB_REPOSITORY} 서비스 source commit sync"
+          url: ${{ env.SLACK_URL }}
