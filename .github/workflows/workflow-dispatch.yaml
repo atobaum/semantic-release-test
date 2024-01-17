@@ -98,11 +98,12 @@ jobs:
     needs: [sync-source-commit]
     runs-on: ubuntu-latest
     env:
+      GITHUB_REPOSITORY: ${{ secrets.SLACK_WEBHOOK_URL }}
       SLACK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
       - name: Notify status success
         uses: lazy-actions/slatify@master
         with:
           type: ${{ job.status }}
-          job_name: "${{ env.GITHUB_REPOSITORY }} 서비스 source commit sync"
+          job_name: "${{ github.repository }} 서비스 source commit sync"
           url: ${{ env.SLACK_URL }}
