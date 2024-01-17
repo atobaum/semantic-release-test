@@ -79,7 +79,7 @@ jobs:
           echo "ALREADY_PUSHED: $ALREADY_PUSHED"
           if [[ $ALREADY_PUSHED -gt 0 ]]; then
             echo "Branch already pushed"
-            exit 0
+            exit 1
           fi
 
           # push the tag
