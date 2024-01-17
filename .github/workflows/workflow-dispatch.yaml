@@ -75,6 +75,7 @@ jobs:
           # check if the tag is already pushed
           ALREADY_PUSHED=$(git branch -r --contains ${GITHUB_REF_NAME} | grep "\btarget/${BRANCH}\b" | wc -l | tr -d ' ')  
 
+          echo "ALREADY_PUSHED: $ALREADY_PUSHED"
           if [[ $ALREADY_PUSHED -gt 0 ]]; then
             echo "Branch already pushed"
             exit 0
