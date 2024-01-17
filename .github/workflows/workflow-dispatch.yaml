@@ -104,5 +104,5 @@ jobs:
         uses: lazy-actions/slatify@master
         with:
           type: ${{ job.status }}
-          job_name: "${GITHUB_REPOSITORY} 서비스 source commit sync"
+          job_name: "${{ env.GITHUB_REPOSITORY }} 서비스 source commit sync"
           url: ${{ env.SLACK_URL }}
