@@ -108,11 +108,9 @@ jobs:
             const [owner, repo] = context.payload.repository.full_name.split("/");
             console.log("context", JSON.stringify(context, null, 2));
             console.log("github", JSON.stringify(github, null, 2));
-            console.log("payload", {
-              owner,
-              repo,
-              tag
-            })
+            const workflowFileName = context.payload.workflow.replace(".github/", "")
+            console.log("workflowFileName", workflowFileName)
+
             const release = await github.rest.repos.getReleaseByTag({
               owner,
               repo,
@@ -120,10 +118,11 @@ jobs:
             })
 
             console.log("release", release.data)
+
             const newBody = `${release.data.body}
             ### modusign-gov tenant deployment log
             [gov-deployed] - ${new Date().toISOString()}
-            [![Workflow Dispatch](${context.payload.repository.html_url}/actions/workflows/${context.payload.inputs.workflowFileName}/badge.svg?branch=${release.data.tag_name})](${context.payload.repository.html_url}/actions/runs/${context.runId})
+            [![Workflow Dispatch](${context.payload.repository.html_url}/actions/${workflowFileName}/badge.svg?branch=${release.data.tag_name})](${context.payload.repository.html_url}/actions/runs/${context.runId})
             `
 
             await github.rest.repos.updateRelease({
