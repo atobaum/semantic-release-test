@@ -13,7 +13,7 @@ on:
           - warning
           - debug
       workflowFileName:
-        description: "Log level"
+        description: "workflow file name"
         required: true
         default: "workflow-dispatch.yaml"
         type: string
@@ -105,17 +105,18 @@ jobs:
         with:
           script: |
             const tag = context.ref.replace("refs/tags/", "");
+            const [owner, repo] = context.payload.repository.full_name.split("/");
             console.log("context", JSON.stringify(context, null, 2));
             console.log("github", JSON.stringify(github, null, 2));
             console.log("payload", {
-              owner: context.payload.repository.owner.name,
-              repo: context.payload.repository.name,
-              tag: tag
+              owner,
+              repo,
+              tag
             })
             const release = await github.rest.repos.getReleaseByTag({
-              owner: context.payload.repository.owner.name,
-              repo: context.payload.repository.name,
-              tag: tag
+              owner,
+              repo,
+              tag
             })
 
             console.log("release", release.data)
@@ -126,8 +127,8 @@ jobs:
             `
 
             await github.rest.repos.updateRelease({
-              owner: context.payload.repository.owner.name,
-              repo: context.payload.repository.name,
+              owner,
+              repo,
               release_id: release.data.id,
               body: newBody
             });
