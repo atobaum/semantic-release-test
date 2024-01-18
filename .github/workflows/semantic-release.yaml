@@ -51,8 +51,8 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            console.log("context", context);
-            console.log("github", github);
+            console.log("context", JSON.stringify(context, null, 2));
+            console.log("github", JSON.stringify(github, null, 2));
             const release = await github.repos.getReleaseByTag({
               owner: context.repo.owner,
               repo: context.repo.repo,
