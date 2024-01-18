@@ -107,13 +107,18 @@ jobs:
             const tag = context.ref.replace("refs/tags/", "");
             console.log("context", JSON.stringify(context, null, 2));
             console.log("github", JSON.stringify(github, null, 2));
+            console.log("payload", {
+              owner: context.payload.repository.owner.name,
+              repo: context.payload.repository.name,
+              tag: tag
+            })
             const release = await github.rest.repos.getReleaseByTag({
               owner: context.payload.repository.owner.name,
               repo: context.payload.repository.name,
               tag: tag
             })
 
-            console.log(release.data)
+            console.log("release", release.data)
             const newBody = `${release.data.body}
             ### modusign-gov tenant deployment log
             [gov-deployed] - ${new Date().toISOString()}
