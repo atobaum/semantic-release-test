@@ -111,7 +111,7 @@ jobs:
             const newBody = `${release.data.body}
             ### modusign-gov tenant deployment log
             [gov-deployed]
-            [![Workflow Dispatch](${context.payload.repository.html_url}/actions/workflows/${}.yaml/badge.svg?branch=${release.data.tag_name})](${context.payload.repository.html_url}/actions/runs/${context.runId})
+            [![Workflow Dispatch](${context.payload.repository.html_url}/actions/workflows/asdf.yaml/badge.svg?branch=${release.data.tag_name})](${context.payload.repository.html_url}/actions/runs/${context.runId})
             `
 
             await github.rest.repos.updateRelease({
