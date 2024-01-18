@@ -54,8 +54,8 @@ jobs:
             console.log("context", JSON.stringify(context, null, 2));
             console.log("github", JSON.stringify(github, null, 2));
             const release = await github.rest.repos.getReleaseByTag({
-              owner: context.repository.owner.name,
-              repo: context.repository.name,
+              owner: context.payload.repository.owner.name,
+              repo: context.payload.repository.name,
               tag: "v1.2.0-rc.9"
             })
 
