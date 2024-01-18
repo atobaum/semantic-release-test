@@ -12,6 +12,11 @@ on:
           - info
           - warning
           - debug
+      workflowFileName:
+        description: "Log level"
+        required: true
+        default: "workflow-dispatch.yaml"
+        type: string
     #   tags:
     #     description: "Test scenario tags"
     #     required: false
@@ -99,19 +104,20 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            const tag = context.ref.replace("refs/tags/", "");
             console.log("context", JSON.stringify(context, null, 2));
             console.log("github", JSON.stringify(github, null, 2));
             const release = await github.rest.repos.getReleaseByTag({
               owner: context.payload.repository.owner.name,
               repo: context.payload.repository.name,
-              tag: "v1.2.0-rc.20"
+              tag: tag
             })
 
             console.log(release.data)
             const newBody = `${release.data.body}
             ### modusign-gov tenant deployment log
-            [gov-deployed]
-            [![Workflow Dispatch](${context.payload.repository.html_url}/actions/workflows/asdf.yaml/badge.svg?branch=${release.data.tag_name})](${context.payload.repository.html_url}/actions/runs/${context.runId})
+            [gov-deployed] - ${new Date().toISOString()}
+            [![Workflow Dispatch](${context.payload.repository.html_url}/actions/workflows/${context.payload.inputs.workflowFileName}/badge.svg?branch=${release.data.tag_name})](${context.payload.repository.html_url}/actions/runs/${context.runId})
             `
 
             await github.rest.repos.updateRelease({
