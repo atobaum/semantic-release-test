@@ -101,19 +101,22 @@ jobs:
           script: |
             console.log("context", JSON.stringify(context, null, 2));
             console.log("github", JSON.stringify(github, null, 2));
-            const release = await github.repos.getReleaseByTag({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag: "${{ github.ref }}"
-            });
+            const release = await github.rest.repos.getReleaseByTag({
+              owner: context.payload.repository.owner.name,
+              repo: context.payload.repository.name,
+              tag: "v1.2.0-rc.17"
+            })
 
-            const oldBody = release.data.body;
-            const statusBadge = `![workflow status](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/workflows/workflow-dispatch.yaml/badge.svg)`;
-            const newBody = `${oldBody}\n\n[gov-deployed]\n${statusBadge}`;
+            console.log(release.data)
+            const newBody = `${release.data.body}
+            ### modusign-gov tenant deployment log
+            [gov-deployed]
+            [![Workflow Dispatch](${context.payload.repository.html_url}/actions/workflows/${}.yaml/badge.svg?branch=${release.data.tag_name})](${context.payload.repository.html_url}/actions/runs/${context.runId})
+            `
 
-            await github.repos.updateRelease({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
+            await github.rest.repos.updateRelease({
+              owner: context.payload.repository.owner.name,
+              repo: context.payload.repository.name,
               release_id: release.data.id,
               body: newBody
             });
