@@ -92,8 +92,8 @@ jobs:
           git push target ${GITHUB_REF_NAME}
 
           # append markdown link to body env
-          BODY="${BODY}\n\n### modusign-gov tenant deployment log\n- [gov-deployed] [![Workflow Dispatch](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/workflows/workflow-dispatch.yaml/badge.svg?branch=${GITHUB_REF_NAME})](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})"
-          echo -e "$BODY" | gh release edit ${GITHUB_REF_NAME} -F -
+          # BODY="${BODY}\n\n### modusign-gov tenant deployment log\n- [gov-deployed] [![Workflow Dispatch](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/workflows/workflow-dispatch.yaml/badge.svg?branch=${GITHUB_REF_NAME})](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})"
+          # echo -e "$BODY" | gh release edit ${GITHUB_REF_NAME} -F -
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TARGET_REPO_USERNAME: atobaum
