@@ -45,3 +45,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GOV: ${{ steps.resolve-env.outputs.gov }}
+
+      - name: github script test
+        id: github-script
+        uses: actions/github-script@v7
+        with:
+          script: |
+            console.log("context", context);
+            console.log("github", github);
+            const release = await github.repos.getReleaseByTag({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag: "v1.2.0-rc.9"
+            })
+
+            console.log(release)

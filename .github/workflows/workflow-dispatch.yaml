@@ -94,6 +94,31 @@ jobs:
           TARGET_REPO_USERNAME: atobaum
           TARGET_REPO: github.com/atobaum/semantic-release-test2.git
 
+      - name: github script test
+        id: github-script
+        uses: actions/github-script@v7
+        with:
+          script: |
+            console.log("context", context);
+            const release = await github.repos.getReleaseByTag({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag: "${{ github.ref }}"
+            })
+
+            console.log(release)
+
+            const ref = "${{ github.ref }}"
+
+            if(ref.startsWith("refs/tags/form-v")){ // prod deployment
+              core.setOutput("REF_BRANCH", "main")
+              core.setOutput("ENV", "production")
+            } else {
+              const refBranch = ref.split("/").slice(2).join('/')
+              core.setOutput("REF_BRANCH", refBranch)
+              core.setOutput("ENV", "stage")
+            }
+
       - name: Notify status success
         if: always()
         uses: lazy-actions/slatify@master
