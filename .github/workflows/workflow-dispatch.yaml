@@ -99,25 +99,24 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            console.log("context", context);
+            console.log("context", JSON.stringify(context, null, 2));
+            console.log("github", JSON.stringify(github, null, 2));
             const release = await github.repos.getReleaseByTag({
               owner: context.repo.owner,
               repo: context.repo.repo,
               tag: "${{ github.ref }}"
-            })
+            });
 
-            console.log(release)
+            const oldBody = release.data.body;
+            const statusBadge = `![workflow status](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/workflows/workflow-dispatch.yaml/badge.svg)`;
+            const newBody = `${oldBody}\n\n[gov-deployed]\n${statusBadge}`;
 
-            const ref = "${{ github.ref }}"
-
-            if(ref.startsWith("refs/tags/form-v")){ // prod deployment
-              core.setOutput("REF_BRANCH", "main")
-              core.setOutput("ENV", "production")
-            } else {
-              const refBranch = ref.split("/").slice(2).join('/')
-              core.setOutput("REF_BRANCH", refBranch)
-              core.setOutput("ENV", "stage")
-            }
+            await github.repos.updateRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: release.data.id,
+              body: newBody
+            });
 
       - name: Notify status success
         if: always()
